@@ -104,7 +104,7 @@ AFTER UPDATE AS
 -- security question answers table
 CREATE TABLE dbo.security_question_answers (
     id BIGINT PRIMARY KEY IDENTITY (1, 1),
-    customer_id NVARCHAR (20) NOT NULL,
+    customer_id NVARCHAR (21) NOT NULL,
 	question NVARCHAR (20) NOT NULL CHECK(question IN ('favourite_letter', 'favourite_number')), -- This needs to be checked again
 	answer NVARCHAR (100) NOT NULL,
 	created_time datetime NOT NULL default current_timestamp,
