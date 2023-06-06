@@ -1,0 +1,42 @@
+name: Trigger auto deployment for demo
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '//**'
+    - '.github/workflows/demo-AutoDeployTrigger-b9f5a88f-9530-4c4a-a661-3af0e94fe4f4.yml'
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.DEMO_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: sauviktest.azurecr.io
+          registryUsername: ${{ secrets.DEMO_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.DEMO_REGISTRY_PASSWORD }}
+          containerAppName: demo
+          resourceGroup: SauvikRG
+          imageToBuild: sauviktest.azurecr.io/demo:${{ github.sha }}
+          dockerfilePath: Dockerfile
+
+     
+
